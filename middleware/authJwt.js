@@ -21,7 +21,22 @@ verifyToken = (req, res, next) => {
   })
 }
 
+checkToken = (req, res) => {
+  let token = req.cookies.token
+  console.log(token)
+  if (!token) {
+    return res.status(403).send({
+      message: 'No token provided'
+    })
+  } else {
+    return res.status(200).send({
+      message: 'OK'
+    })
+  }
+}
+
 const authJwt = {
   verifyToken: verifyToken,
+  checkToken: checkToken
 }
 module.exports = authJwt

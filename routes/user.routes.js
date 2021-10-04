@@ -12,6 +12,11 @@ module.exports = function(app) {
   })
 
   app.get(
+    '/check',
+    authJwt.checkToken
+  )
+
+  app.get(
     '/api/personal/', 
     authJwt.verifyToken,
     controller.getPersonal
