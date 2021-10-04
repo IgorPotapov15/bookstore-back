@@ -16,8 +16,13 @@ module.exports = function(app) {
     authJwt.checkToken
   )
 
+  app.post(
+    '/signout',
+    authJwt.signOut
+  )
+
   app.get(
-    '/api/personal/', 
+    '/user', 
     authJwt.verifyToken,
     controller.getPersonal
   )

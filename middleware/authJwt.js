@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken')
 const config = require('../config/auth.config.js')
 
 verifyToken = (req, res, next) => {
-  let token = req.headers['x-access-token']
+  let token = req.cookies.token
 
   if (!token) {
     return res.status(403).send({
@@ -23,7 +23,6 @@ verifyToken = (req, res, next) => {
 
 checkToken = (req, res) => {
   let token = req.cookies.token
-  console.log(token)
   if (!token) {
     return res.status(403).send({
       message: 'No token provided'
@@ -35,8 +34,17 @@ checkToken = (req, res) => {
   }
 }
 
+signOut = (req, res) => {
+  res.clearCookie('token')
+  console.log('1')
+  return res.status(200).send({
+    message: 'OK'
+  })
+}
+
 const authJwt = {
   verifyToken: verifyToken,
-  checkToken: checkToken
+  checkToken: checkToken,
+  signOut: signOut
 }
 module.exports = authJwt

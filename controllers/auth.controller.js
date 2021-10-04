@@ -10,14 +10,14 @@ exports.signup = (req, res) => {
   const errors = validationResult(req)
     if (!errors.isEmpty()) {
       let errorsObj = errors.array()
-      let newMsg
+      let message
       if (errorsObj[0].param === 'email') {
-        newMsg = 'Invalid email address'
+        message = 'Invalid email address'
       }
       if (errorsObj[0].param === 'password') {
-        newMsg = 'Password should be longer than 5 symbols'
+        message = 'Password should be longer than 5 symbols'
       }
-      return res.status(400).json({ newMsg })
+      return res.status(400).json({ message })
     }
   User.create({
     username: req.body.username,
@@ -48,6 +48,7 @@ exports.signin = (req, res) => {
     let passIsValid = req.body.password === decrPass;
 
     if (!passIsValid) {
+      res.clearCookie('token')
       return res.status(401).send({
         accessToken: null,
         message: 'Invalid password'
@@ -60,10 +61,9 @@ exports.signin = (req, res) => {
     
     res.cookie('token', token, { httpOnly: true })
     res.status(200).send({
-      id: user.id,
       username: user.username,
       email: user.email,
-      accessToken: token
+      dob: user.dob
     })
   })
   .catch(err => {

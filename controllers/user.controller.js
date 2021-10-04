@@ -5,7 +5,7 @@ const config = require('../config/auth.config.js')
 let cryptoJS = require("crypto-js")
 
 exports.getPersonal = (req, res) => {
-  let token = req.headers['x-access-token']
+  let token = req.cookies.token
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
       return res.status(401).send({
@@ -15,16 +15,22 @@ exports.getPersonal = (req, res) => {
     userId = decoded.id
     User.findByPk(userId).then(user => {
       return res.status(200).send({
-        id: user.id,
         username: user.username,
-        email: user.email
+        email: user.email,
+        dob: user.dob
+      })
+    })
+    .catch(err => {
+      res.clearCookie('token')
+      res.status(404).send({
+        message: 'User not found'
       })
     })
   })
 }
 
 exports.updatePersonal = (req, res) => {
-  let token = req.headers['x-access-token']
+  let token = req.cookies.token
   let targetField
   jwt.verify(token, config.secret, (err, decoded) => {
     if (err) {
