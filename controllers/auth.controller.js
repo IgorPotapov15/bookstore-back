@@ -1,10 +1,12 @@
 const db = require('../models')
 const config = require('../config/auth.config')
 const User = db.User
+const Role = db.Role
 const { validationResult } = require('express-validator')
 
 let jwt = require('jsonwebtoken')
 let cryptoJS = require("crypto-js");
+const user = require('../models/user')
 
 exports.signup = (req, res) => {
   const errors = validationResult(req)
@@ -25,7 +27,8 @@ exports.signup = (req, res) => {
     password: cryptoJS.AES.encrypt(req.body.password, config.secret).toString(),
     dob: req.body.dob
   })
-  .then(() => {
+  .then(user => {
+    user.setRole([1])
     res.send({ message: 'User was registered successfully' })
   })
   .catch(err => {
@@ -63,7 +66,8 @@ exports.signin = (req, res) => {
     res.status(200).send({
       username: user.username,
       email: user.email,
-      dob: user.dob
+      dob: user.dob,
+
     })
   })
   .catch(err => {

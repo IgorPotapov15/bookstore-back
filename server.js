@@ -18,6 +18,12 @@ app.use(cookieParser())
 const db = require('./models')
 
 db.sequelize.sync({force: true}).then(() => {
+  db.Role.create({
+    role_name: 'admin',
+  })
+  db.Role.create({
+    role_name: 'user',
+  })
   console.log('Drop and Resync Db')
 })
 
