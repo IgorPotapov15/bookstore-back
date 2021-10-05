@@ -3,6 +3,8 @@ const User = db.User
 const jwt = require('jsonwebtoken')
 const config = require('../config/auth.config.js')
 let cryptoJS = require("crypto-js")
+const crypto = require('crypto')
+const fs = require('fs')
 
 exports.getPersonal = (req, res) => {
   let token = req.cookies.token
@@ -17,7 +19,8 @@ exports.getPersonal = (req, res) => {
       return res.status(200).send({
         username: user.username,
         email: user.email,
-        dob: user.dob
+        dob: user.dob,
+        role: user.RoleId
       })
     })
     .catch(err => {
@@ -96,4 +99,17 @@ exports.deletePersonal = (req, res) => {
       })
     })
   })
+}
+
+exports.uploadBook = (req, res) => {
+  console.log(req.body)
+  const randomString = crypto.randomBytes(5).toString('hex')
+  const stream = fs.createWriteStream(`./public/images/${randomString}.png`)
+  stream.on('finish', () => {
+    console.log('file has been written')
+    res.end('file has been written')
+  })
+  
+  stream.write(Buffer.from(req.body.img), 'utf-8')
+  stream.end()
 }

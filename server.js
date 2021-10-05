@@ -2,6 +2,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 const cookieParser = require("cookie-parser")
+const crypto = require('crypto')
+const fs = require('fs')
 const app = express()
 
 let corsOptions = {
@@ -11,18 +13,20 @@ let corsOptions = {
 const PORT = process.env.PORT || 8080
 
 app.use(cors(corsOptions))
-app.use(bodyParser.json())
+app.use(bodyParser.json({ limit: "50mb" }))
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cookieParser())
+app.use(express.static("public"))
+app.use(express.json({ limit: "50mb" }))
 
 const db = require('./models')
 
 db.sequelize.sync({force: true}).then(() => {
   db.Role.create({
-    role_name: 'admin',
+    role_name: 'user',
   })
   db.Role.create({
-    role_name: 'user',
+    role_name: 'admin',
   })
   console.log('Drop and Resync Db')
 })

@@ -39,4 +39,9 @@ module.exports = function(app) {
     authJwt.verifyToken,
     controller.deletePersonal
   )
+
+  app.post(
+    '/upload',
+    controller.uploadBook
+  )
 }

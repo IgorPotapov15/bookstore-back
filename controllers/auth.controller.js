@@ -28,7 +28,7 @@ exports.signup = (req, res) => {
     dob: req.body.dob
   })
   .then(user => {
-    user.setRole([1])
+    user.setRole([2])
     res.send({ message: 'User was registered successfully' })
   })
   .catch(err => {
@@ -67,7 +67,7 @@ exports.signin = (req, res) => {
       username: user.username,
       email: user.email,
       dob: user.dob,
-
+      role: user.RoleId
     })
   })
   .catch(err => {
