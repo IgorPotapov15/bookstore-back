@@ -49,4 +49,9 @@ module.exports = function(app) {
     '/get-books',
     controller.getBooks
   )
+
+  app.delete(
+    '/delete-book',
+    controller.deleteBooks
+  )
 }

@@ -163,3 +163,19 @@ exports.getBooks = async (req, res) => {
   })
   res.status(200).send(books)
 }
+
+exports.deleteBooks = async (req, res) => {
+  const targetItem = await Book.findOne({
+    where:{
+      id: req.body.id
+    }
+  })
+  try {
+    targetItem.destroy()
+    res.status(204).send('OK')
+  } catch(error) {
+    res.status(404).send({
+      message: 'Book is not found'
+    })
+  }
+}
