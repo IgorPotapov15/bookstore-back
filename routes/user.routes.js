@@ -44,4 +44,9 @@ module.exports = function(app) {
     '/upload',
     controller.uploadBook
   )
+
+  app.get(
+    '/get-books',
+    controller.getBooks
+  )
 }

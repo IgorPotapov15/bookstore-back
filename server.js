@@ -21,14 +21,14 @@ app.use(express.json({ limit: "50mb" }))
 
 const db = require('./models')
 
-db.sequelize.sync({force: true}).then(() => {
-  db.Role.create({
-    role_name: 'user',
-  })
-  db.Role.create({
-    role_name: 'admin',
-  })
-  console.log('Drop and Resync Db')
+db.sequelize.sync().then(() => {
+  // db.Role.create({
+  //   role_name: 'user',
+  // })
+  // db.Role.create({
+  //   role_name: 'admin',
+  // })
+  // console.log('Drop and Resync Db')
 })
 
 app.get('/', function(req, res) {

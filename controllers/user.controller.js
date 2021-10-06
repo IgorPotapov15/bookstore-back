@@ -1,5 +1,6 @@
 const db = require('../models')
 const User = db.User
+const Book = db.Book
 const jwt = require('jsonwebtoken')
 const config = require('../config/auth.config.js')
 let cryptoJS = require("crypto-js")
@@ -107,9 +108,58 @@ exports.uploadBook = (req, res) => {
   const stream = fs.createWriteStream(`./public/images/${randomString}.png`)
   stream.on('finish', () => {
     console.log('file has been written')
-    res.end('file has been written')
   })
   
   stream.write(Buffer.from(req.body.img), 'utf-8')
   stream.end()
+
+  let token = req.cookies.token
+  jwt.verify(token, config.secret, (err, decoded) => {
+    if (err) {
+      return res.status(401).send({
+        message: 'Unauthorized'
+      })
+    }
+    userId = decoded.id
+    User.findByPk(userId).then(user => {
+      Book.create({
+        img: req.body.img,
+        name: req.body.name,
+        description: req.body.description,
+        genre: req.body.genre,
+        author: req.body.author
+      })
+      .then(book => {
+        console.log(userId, book, '-----------------------')
+        book.setUser(userId)
+        res.send({ message: 'Book uploaded' })
+      })
+      .catch(err => {
+        res.status(500).send({ message: err.message })
+      })
+    })
+    .catch(err => {
+      res.clearCookie('token')
+      res.status(404).send({
+        message: 'User not found'
+      })
+    })
+  })
+}
+
+exports.getBooks = async (req, res) => {
+  let books = []
+  const rawBooks = await Book.findAll()
+  await rawBooks.forEach(item => {
+    books.push({
+      id: item.id,
+      img: Buffer.from(item.img).toString('base64'),
+      name: item.name,
+      description: item.description,
+      genre: item.genre,
+      author: item.author,
+      postData: item.createdAt
+    })
+  })
+  res.status(200).send(books)
 }
