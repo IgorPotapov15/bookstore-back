@@ -104,14 +104,14 @@ exports.deletePersonal = (req, res) => {
 
 exports.uploadBook = (req, res) => {
   console.log(req.body)
-  const randomString = crypto.randomBytes(5).toString('hex')
-  const stream = fs.createWriteStream(`./public/images/${randomString}.png`)
-  stream.on('finish', () => {
-    console.log('file has been written')
-  })
+  // const randomString = crypto.randomBytes(5).toString('hex')
+  // const stream = fs.createWriteStream(`./public/images/${randomString}.png`)
+  // stream.on('finish', () => {
+  //   console.log('file has been written')
+  // })
   
-  stream.write(Buffer.from(req.body.img), 'utf-8')
-  stream.end()
+  // stream.write(Buffer.from(req.body.img), 'utf-8')
+  // stream.end()
 
   let token = req.cookies.token
   jwt.verify(token, config.secret, (err, decoded) => {
