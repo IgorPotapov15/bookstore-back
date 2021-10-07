@@ -124,11 +124,13 @@ exports.uploadBook = (req, res) => {
     User.findByPk(userId).then(user => {
       Book.create({
         img: req.body.img,
-        img2: req.body.img2,
+        img2: req.body.img2.length > 10 ? req.body.img2 : null,
         name: req.body.name,
         description: req.body.description,
         genre: req.body.genre,
-        author: req.body.author
+        author: req.body.author,
+        rating: req.body.rating,
+        price: req.body.price
       })
       .then(book => {
         console.log(userId, book, '-----------------------')
@@ -155,11 +157,13 @@ exports.getBooks = async (req, res) => {
     books.push({
       id: item.id,
       img: Buffer.from(item.img).toString('base64'),
-      img2: Buffer.from(item.img2).toString('base64'),
+      img2: !item.img2 ? null : Buffer.from(item.img2).toString('base64'),
       name: item.name,
       description: item.description,
       genre: item.genre,
       author: item.author,
+      rating: item.rating,
+      price: item.price,
       postData: item.createdAt
     })
   })

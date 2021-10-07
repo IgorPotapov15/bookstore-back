@@ -25,6 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.TEXT,
     genre: DataTypes.STRING,
     author: DataTypes.STRING,
+    price: DataTypes.FLOAT,
+    rating: DataTypes.FLOAT,
     // userId: {
     //   type: DataTypes.INTEGER,
     //   references: 'Users',

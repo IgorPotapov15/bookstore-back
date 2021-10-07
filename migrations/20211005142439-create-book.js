@@ -26,6 +26,12 @@ module.exports = {
       author: {
         type: Sequelize.STRING
       },
+      price: {
+        type: Sequelize.FLOAT
+      },
+      rating: {
+        type: Sequelize.FLOAT
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
