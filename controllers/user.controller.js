@@ -124,6 +124,7 @@ exports.uploadBook = (req, res) => {
     User.findByPk(userId).then(user => {
       Book.create({
         img: req.body.img,
+        img2: req.body.img2,
         name: req.body.name,
         description: req.body.description,
         genre: req.body.genre,
@@ -154,6 +155,7 @@ exports.getBooks = async (req, res) => {
     books.push({
       id: item.id,
       img: Buffer.from(item.img).toString('base64'),
+      img2: Buffer.from(item.img2).toString('base64'),
       name: item.name,
       description: item.description,
       genre: item.genre,

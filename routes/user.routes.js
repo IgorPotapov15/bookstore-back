@@ -28,7 +28,7 @@ module.exports = function(app) {
   )
 
   app.patch(
-    '/api/personal/',
+    '/user-change',
     authJwt.verifyToken,
     validation,
     controller.updatePersonal

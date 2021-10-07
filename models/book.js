@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Book.init({
     img: DataTypes.BLOB,
+    img2: DataTypes.BLOB,
     name: DataTypes.STRING,
     description: DataTypes.TEXT,
     genre: DataTypes.STRING,
