@@ -133,7 +133,6 @@ exports.uploadBook = (req, res) => {
         price: req.body.price
       })
       .then(book => {
-        console.log(userId, book, '-----------------------')
         book.setUser(userId)
         res.send({ message: 'Book uploaded' })
       })
@@ -151,8 +150,11 @@ exports.uploadBook = (req, res) => {
 }
 
 exports.getBooks = async (req, res) => {
+  console.log(req.query)
   let books = []
-  const rawBooks = await Book.findAll()
+  const rawBooks = await Book.findAll({
+    order: [[req.query.sortBy, req.query.order]]
+  })
   await rawBooks.forEach(item => {
     books.push({
       id: item.id,
