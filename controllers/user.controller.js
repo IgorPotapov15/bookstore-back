@@ -6,6 +6,7 @@ const config = require('../config/auth.config.js')
 let cryptoJS = require("crypto-js")
 const crypto = require('crypto')
 const fs = require('fs')
+const { Op } = require('sequelize')
 
 exports.getPersonal = (req, res) => {
   let token = req.cookies.token
@@ -150,10 +151,31 @@ exports.uploadBook = (req, res) => {
 }
 
 exports.getBooks = async (req, res) => {
-  console.log(req.query)
   let books = []
+  let filterObj = {}
+
+  if (req.query.filterBy) {
+    if(req.query.filterBy === 'price' || req.query.filterBy === 'rating') {
+      if (!req.query.from) {
+        filterObj[req.query.filterBy] = {
+          [Op.lt]: [req.query.to]
+        }
+      } else if (!req.query.to) {
+        filterObj[req.query.filterBy] = {
+          [Op.gt]: [req.query.from]
+        }
+      } else {
+        filterObj[req.query.filterBy] = {
+          [Op.between]: [req.query.from, req.query.to]
+        }
+      }
+    } else {
+      filterObj[req.query.filterBy] = req.query.filterValue
+    }
+  }
   const rawBooks = await Book.findAll({
-    order: [[req.query.sortBy, req.query.order]]
+    order: [[req.query.sortBy, req.query.order]],
+    where: filterObj
   })
   await rawBooks.forEach(item => {
     books.push({
@@ -170,6 +192,10 @@ exports.getBooks = async (req, res) => {
     })
   })
   res.status(200).send(books)
+}
+
+exports.getBooksAttrs = async (req, res) => {
+  
 }
 
 exports.deleteBooks = async (req, res) => {

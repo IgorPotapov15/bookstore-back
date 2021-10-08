@@ -44,6 +44,7 @@ exports.signin = (req, res) => {
   })
   .then(user => {
     if (!user) {
+      res.clearCookie('token')
       return res.status(404).send({ message: 'User not found' })
     }
 
