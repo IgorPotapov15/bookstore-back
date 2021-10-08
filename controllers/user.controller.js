@@ -104,7 +104,6 @@ exports.deletePersonal = (req, res) => {
 }
 
 exports.uploadBook = (req, res) => {
-  console.log(req.body)
   // const randomString = crypto.randomBytes(5).toString('hex')
   // const stream = fs.createWriteStream(`./public/images/${randomString}.png`)
   // stream.on('finish', () => {
@@ -151,7 +150,10 @@ exports.uploadBook = (req, res) => {
 }
 
 exports.getBooks = async (req, res) => {
-  let books = []
+  console.log(req.query)
+  let resArr = {
+    books: []
+  }
   let filterObj = {}
 
   if (req.query.filterBy) {
@@ -173,12 +175,15 @@ exports.getBooks = async (req, res) => {
       filterObj[req.query.filterBy] = req.query.filterValue
     }
   }
-  const rawBooks = await Book.findAll({
+  const rawBooks = await Book.findAndCountAll({
+    limit: 5,
+    offset: (req.query.page - 1) * 5,
     order: [[req.query.sortBy, req.query.order]],
     where: filterObj
   })
-  await rawBooks.forEach(item => {
-    books.push({
+
+  await rawBooks.rows.forEach(item => {
+    resArr.books.push({
       id: item.id,
       img: Buffer.from(item.img).toString('base64'),
       img2: !item.img2 ? null : Buffer.from(item.img2).toString('base64'),
@@ -191,11 +196,8 @@ exports.getBooks = async (req, res) => {
       postData: item.createdAt
     })
   })
-  res.status(200).send(books)
-}
-
-exports.getBooksAttrs = async (req, res) => {
-  
+  resArr.count = rawBooks.count
+  res.status(200).send(resArr)
 }
 
 exports.deleteBooks = async (req, res) => {
