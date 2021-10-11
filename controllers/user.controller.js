@@ -175,29 +175,36 @@ exports.getBooks = async (req, res) => {
       filterObj[req.query.filterBy] = req.query.filterValue
     }
   }
-  const rawBooks = await Book.findAndCountAll({
-    limit: 5,
-    offset: (req.query.page - 1) * 5,
-    order: [[req.query.sortBy, req.query.order]],
-    where: filterObj
-  })
-
-  await rawBooks.rows.forEach(item => {
-    resArr.books.push({
-      id: item.id,
-      img: Buffer.from(item.img).toString('base64'),
-      img2: !item.img2 ? null : Buffer.from(item.img2).toString('base64'),
-      name: item.name,
-      description: item.description,
-      genre: item.genre,
-      author: item.author,
-      rating: item.rating,
-      price: item.price,
-      postData: item.createdAt
+  try {
+    const rawBooks = await Book.findAndCountAll({
+      limit: 5,
+      offset: (req.query.page - 1) * 5,
+      order: [[req.query.sortBy, req.query.order]],
+      where: filterObj
     })
-  })
-  resArr.count = rawBooks.count
-  res.status(200).send(resArr)
+  
+    await rawBooks.rows.forEach(item => {
+      resArr.books.push({
+        id: item.id,
+        img: Buffer.from(item.img).toString('base64'),
+        img2: !item.img2 ? null : Buffer.from(item.img2).toString('base64'),
+        name: item.name,
+        description: item.description,
+        genre: item.genre,
+        author: item.author,
+        rating: item.rating,
+        price: item.price,
+        postData: item.createdAt
+      })
+    })
+    resArr.count = rawBooks.count
+    res.status(200).send(resArr)
+  } catch (error) {
+    res.status(400).send({
+      message: 'Bad request'
+    })
+  }
+  
 }
 
 exports.deleteBooks = async (req, res) => {
