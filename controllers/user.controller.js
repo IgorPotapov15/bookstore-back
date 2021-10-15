@@ -209,7 +209,6 @@ exports.checkReplies = async (req, res) => {
 
 exports.getComments = async (req, res) => {
   let resArr = []
-  console.log('||||||||||||||||||||||||||||||||||||||', req.query)
   try {
     let comments = await Comment.findAll({
       order: [['createdAt', 'asc']],
@@ -239,7 +238,6 @@ exports.getComments = async (req, res) => {
     }
     res.status(200).send(resArr)
   } catch (error) {
-    console.log('||||||||||||||||||||||||||||||||||||||', req.query)
   }
 }
 
@@ -359,7 +357,34 @@ exports.getBooks = async (req, res) => {
       message: 'Bad request'
     })
   }
-  
+}
+
+exports.getOneBook = async (req, res) => {
+  try {
+    if (req.query.bookId === '') {
+      res.status(404).send({
+        message: 'Book is not found'
+      })
+    } else {
+      const book = await Book.findOne({
+        where: {
+          id: req.query.bookId
+        }
+      })
+      if (book === null) {
+        res.status(404).send({
+          message: 'Book is not found'
+        })
+      } else {
+        book.img = Buffer.from(book.img).toString('base64')
+        book.img2 = !book.img2 ? null : Buffer.from(book.img2).toString('base64')
+        console.log('------------|||||||||||||____________________|||||||||||||||||||||')
+        res.status(200).send(book)
+      }
+    } 
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 exports.deleteBooks = async (req, res) => {

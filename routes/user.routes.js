@@ -79,4 +79,9 @@ module.exports = function(app) {
     '/check-replies',
     controller.checkReplies
   )
+
+  app.get(
+    '/get-one-book',
+    controller.getOneBook
+  )
 }
