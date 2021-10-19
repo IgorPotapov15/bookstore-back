@@ -323,8 +323,8 @@ exports.getBooks = async (req, res) => {
   }
   try {
     const rawBooks = await Book.findAndCountAll({
-      limit: 5,
-      offset: (req.query.page - 1) * 5,
+      limit: 9,
+      offset: (req.query.page - 1) * 9,
       order: [[req.query.sortBy, req.query.order]],
       where: filterObj
     })

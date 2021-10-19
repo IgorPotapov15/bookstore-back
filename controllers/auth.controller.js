@@ -19,6 +19,9 @@ exports.signup = (req, res) => {
       if (errorsObj[0].param === 'password') {
         message = 'Password should be longer than 5 symbols'
       }
+      if (errorsObj[0].param === 'username') {
+        message = 'Username should be longer than 5 symbols'
+      }
       return res.status(400).json({ message })
     }
   User.create({

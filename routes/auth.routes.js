@@ -17,6 +17,7 @@ module.exports = function(app) {
     cors(),
     body('email').isEmail(),
     body('password').isLength({ min: 5 }),
+    body('username').isLength({ min: 5 }),
     verifySignUp.checkDuplicateUsernameOrEmail,
     controller.signup
   )
